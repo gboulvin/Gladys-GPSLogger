@@ -1,6 +1,6 @@
 {
   "name": "gladys-gpslogger",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Gladys Assistant external integration for the GPSLogger Android app: phones as GPS trackers, home presence, scenes and widgets.",
   "type": "module",

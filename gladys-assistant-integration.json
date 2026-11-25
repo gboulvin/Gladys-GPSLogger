@@ -8,8 +8,8 @@
     "de": "Handys mit der App GPSLogger werden zu GPS-Trackern: Position, Anwesenheit, Akku.",
     "es": "Sus teléfonos con la app GPSLogger se vuelven rastreadores GPS: posición, presencia, batería."
   },
-  "version": "0.0.0",
-  "docker_image": "ghcr.io/gboulvin/gladys-gpslogger:0.0.0",
+  "version": "1.0.0",
+  "docker_image": "ghcr.io/gboulvin/gladys-gpslogger:1.0.0",
   "gladys_version": ">=5.1.0",
   "cover_image": "https://raw.githubusercontent.com/gboulvin/Gladys-GPSLogger/main/cover.png",
   "categories": ["security", "services"],
@@ -18,7 +18,7 @@
   "containers": [
     {
       "name": "receiver",
-      "docker_image": "ghcr.io/gboulvin/gladys-gpslogger:0.0.0",
+      "docker_image": "ghcr.io/gboulvin/gladys-gpslogger:1.0.0",
       "start": "manual",
       "env": {
         "GPSLOGGER_ROLE": "receiver"

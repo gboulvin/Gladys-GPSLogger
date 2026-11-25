@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-25
+
 ### Added
 
 - First release of the GPSLogger integration: every Android phone running the
@@ -34,4 +36,5 @@ the notes of the version's GitHub Release.
 - Parameters of the Home Assistant GPSLogger setup accepted as is.
 - English, French, German and Spanish texts and documentation.
 
-[Unreleased]: https://github.com/gboulvin/Gladys-GPSLogger/commits/main
+[Unreleased]: https://github.com/gboulvin/Gladys-GPSLogger/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/gboulvin/Gladys-GPSLogger/releases/tag/v1.0.0
