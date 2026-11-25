@@ -1,0 +1,1054 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "GPSLogger",
+  "description": {
+    "en": "Turn phones running the GPSLogger app into GPS trackers: position, presence, battery.",
+    "fr": "Vos téléphones avec l'app GPSLogger deviennent des traceurs GPS : position, présence, batterie.",
+    "de": "Handys mit der App GPSLogger werden zu GPS-Trackern: Position, Anwesenheit, Akku.",
+    "es": "Sus teléfonos con la app GPSLogger se vuelven rastreadores GPS: posición, presencia, batería."
+  },
+  "version": "0.0.0",
+  "docker_image": "ghcr.io/gboulvin/gladys-gpslogger:0.0.0",
+  "gladys_version": ">=5.1.0",
+  "cover_image": "https://raw.githubusercontent.com/gboulvin/Gladys-GPSLogger/main/cover.png",
+  "categories": ["security", "services"],
+  "transports": ["local", "cloud"],
+  "location": true,
+  "containers": [
+    {
+      "name": "receiver",
+      "docker_image": "ghcr.io/gboulvin/gladys-gpslogger:0.0.0",
+      "start": "manual",
+      "env": {
+        "GPSLOGGER_ROLE": "receiver"
+      },
+      "ports": [
+        {
+          "container_port": 8080,
+          "name": "gpslogger",
+          "browsable": false,
+          "label": {
+            "en": "GPSLogger local receiver",
+            "fr": "Récepteur local GPSLogger",
+            "de": "Lokaler GPSLogger-Empfänger",
+            "es": "Receptor local de GPSLogger"
+          }
+        }
+      ]
+    }
+  ],
+  "webhooks": [
+    {
+      "key": "gpslogger",
+      "mode": "sync",
+      "label": {
+        "en": "GPSLogger positions",
+        "fr": "Positions GPSLogger",
+        "de": "GPSLogger-Positionen",
+        "es": "Posiciones de GPSLogger"
+      }
+    }
+  ],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "How it works",
+        "fr": "Comment ça marche",
+        "de": "So funktioniert es",
+        "es": "Cómo funciona"
+      },
+      "description": {
+        "en": "Install GPSLogger on each phone, then enable \"Log to custom URL\" (HTTP method POST). Every phone becomes a tracker in the Discovery tab once it has sent its first position. Use one distinct device name per phone (the device=%DEVNAME parameter).",
+        "fr": "Installez GPSLogger sur chaque téléphone, puis activez « Log to custom URL » (méthode HTTP POST). Chaque téléphone apparaît comme traceur dans l'onglet Découverte dès sa première position. Utilisez un nom d'appareil différent par téléphone (paramètre device=%DEVNAME).",
+        "de": "Installieren Sie GPSLogger auf jedem Handy und aktivieren Sie „Log to custom URL“ (HTTP-Methode POST). Jedes Handy erscheint nach seiner ersten Position als Tracker im Reiter „Erkennung“. Verwenden Sie pro Handy einen eigenen Gerätenamen (Parameter device=%DEVNAME).",
+        "es": "Instale GPSLogger en cada teléfono y active «Log to custom URL» (método HTTP POST). Cada teléfono aparece como rastreador en la pestaña Descubrimiento tras enviar su primera posición. Use un nombre de dispositivo distinto por teléfono (parámetro device=%DEVNAME)."
+      },
+      "links": [
+        {
+          "url": "https://gpslogger.app",
+          "label": {
+            "en": "GPSLogger website",
+            "fr": "Site de GPSLogger",
+            "de": "GPSLogger-Website",
+            "es": "Sitio de GPSLogger"
+          }
+        },
+        {
+          "url": "https://github.com/gboulvin/Gladys-GPSLogger/blob/main/docs/en.md",
+          "label": {
+            "en": "Setup guide",
+            "fr": "Guide d'installation",
+            "de": "Einrichtungsanleitung",
+            "es": "Guía de configuración"
+          }
+        }
+      ]
+    },
+    {
+      "key": "local_section",
+      "type": "section",
+      "label": {
+        "en": "Local URL (home Wi-Fi or VPN)",
+        "fr": "URL locale (Wi-Fi de la maison ou VPN)",
+        "de": "Lokale URL (WLAN zu Hause oder VPN)",
+        "es": "URL local (Wi-Fi de casa o VPN)"
+      },
+      "description": {
+        "en": "In GPSLogger, set the URL to http://{{gladys_host}}:{{port:gpslogger}}/log - it only works when the phone can reach Gladys on your network. Use the cloud URL (Gladys Plus) to log from anywhere.",
+        "fr": "Dans GPSLogger, indiquez l'URL http://{{gladys_host}}:{{port:gpslogger}}/log - elle ne fonctionne que si le téléphone joint Gladys sur votre réseau. Utilisez l'URL cloud (Gladys Plus) pour suivre le téléphone partout.",
+        "de": "Tragen Sie in GPSLogger die URL http://{{gladys_host}}:{{port:gpslogger}}/log ein - sie funktioniert nur, wenn das Handy Gladys in Ihrem Netzwerk erreicht. Nutzen Sie die Cloud-URL (Gladys Plus), um überall zu loggen.",
+        "es": "En GPSLogger, indique la URL http://{{gladys_host}}:{{port:gpslogger}}/log - solo funciona si el teléfono alcanza Gladys en su red. Use la URL en la nube (Gladys Plus) para registrar desde cualquier lugar."
+      }
+    },
+    {
+      "key": "local_receiver",
+      "type": "boolean",
+      "label": {
+        "en": "Enable the local receiver",
+        "fr": "Activer le récepteur local",
+        "de": "Lokalen Empfänger aktivieren",
+        "es": "Activar el receptor local"
+      },
+      "description": {
+        "en": "Publishes an HTTP port on your network for GPSLogger. Turn it off if you only use Gladys Plus.",
+        "fr": "Publie un port HTTP sur votre réseau pour GPSLogger. Désactivez-le si vous n'utilisez que Gladys Plus.",
+        "de": "Öffnet einen HTTP-Port in Ihrem Netzwerk für GPSLogger. Deaktivieren, wenn Sie nur Gladys Plus nutzen.",
+        "es": "Publica un puerto HTTP en su red para GPSLogger. Desactívelo si solo usa Gladys Plus."
+      },
+      "required": false,
+      "default": true
+    },
+    {
+      "key": "cloud_section",
+      "type": "section",
+      "label": {
+        "en": "Cloud URL (Gladys Plus)",
+        "fr": "URL cloud (Gladys Plus)",
+        "de": "Cloud-URL (Gladys Plus)",
+        "es": "URL en la nube (Gladys Plus)"
+      },
+      "description": {
+        "en": "To receive positions from anywhere, paste your Gladys Plus Open API key in the \"Gladys Plus webhooks\" block, then press \"Show the GPSLogger URLs\" below and copy the cloud URL into GPSLogger.",
+        "fr": "Pour recevoir les positions de partout, collez votre clé Open API Gladys Plus dans le bloc « Webhooks Gladys Plus », puis cliquez sur « Afficher les URL GPSLogger » ci-dessous et copiez l'URL cloud dans GPSLogger.",
+        "de": "Um Positionen von überall zu empfangen, fügen Sie Ihren Gladys Plus Open-API-Schlüssel im Block „Gladys Plus Webhooks“ ein, klicken Sie unten auf „GPSLogger-URLs anzeigen“ und kopieren Sie die Cloud-URL in GPSLogger.",
+        "es": "Para recibir posiciones desde cualquier lugar, pegue su clave Open API de Gladys Plus en el bloque «Webhooks de Gladys Plus», pulse «Mostrar las URL de GPSLogger» abajo y copie la URL en la nube en GPSLogger."
+      }
+    },
+    {
+      "key": "token",
+      "type": "secret",
+      "label": {
+        "en": "Access token (optional)",
+        "fr": "Jeton d'accès (facultatif)",
+        "de": "Zugriffstoken (optional)",
+        "es": "Token de acceso (opcional)"
+      },
+      "description": {
+        "en": "When set, every request must carry token=<value> (or the header Authorization: Bearer <value>). Recommended.",
+        "fr": "Si renseigné, chaque requête doit contenir token=<valeur> (ou l'en-tête Authorization: Bearer <valeur>). Recommandé.",
+        "de": "Wenn gesetzt, muss jede Anfrage token=<Wert> enthalten (oder den Header Authorization: Bearer <Wert>). Empfohlen.",
+        "es": "Si se define, cada petición debe incluir token=<valor> (o la cabecera Authorization: Bearer <valor>). Recomendado."
+      },
+      "placeholder": {
+        "en": "A long random string",
+        "fr": "Une longue chaîne aléatoire",
+        "de": "Eine lange Zufallszeichenfolge",
+        "es": "Una cadena aleatoria larga"
+      },
+      "required": false
+    },
+    {
+      "key": "home_radius",
+      "type": "number",
+      "label": {
+        "en": "Home radius (m)",
+        "fr": "Rayon du domicile (m)",
+        "de": "Radius um das Zuhause (m)",
+        "es": "Radio de la casa (m)"
+      },
+      "description": {
+        "en": "A tracker closer than this to the house location set in Gladys is at home.",
+        "fr": "Un traceur plus proche que cette distance de la position de la maison définie dans Gladys est à la maison.",
+        "de": "Ein Tracker, der näher als dieser Wert am in Gladys festgelegten Standort des Hauses ist, ist zu Hause.",
+        "es": "Un rastreador más cerca que esta distancia de la ubicación de la casa definida en Gladys está en casa."
+      },
+      "placeholder": {
+        "en": "e.g. 150",
+        "fr": "ex. 150",
+        "de": "z. B. 150",
+        "es": "p. ej. 150"
+      },
+      "required": false,
+      "default": 150,
+      "min": 20,
+      "max": 5000
+    },
+    {
+      "key": "battery_low_threshold",
+      "type": "number",
+      "label": {
+        "en": "Low battery threshold (%)",
+        "fr": "Seuil de batterie faible (%)",
+        "de": "Schwelle für niedrigen Akku (%)",
+        "es": "Umbral de batería baja (%)"
+      },
+      "required": false,
+      "default": 20,
+      "min": 1,
+      "max": 99
+    },
+    {
+      "key": "stale_minutes",
+      "type": "number",
+      "label": {
+        "en": "Tracker lost after (min)",
+        "fr": "Traceur perdu après (min)",
+        "de": "Tracker verloren nach (min)",
+        "es": "Rastreador perdido tras (min)"
+      },
+      "description": {
+        "en": "Without any position for this long, a tracker is shown as unreachable and the \"Tracker lost\" trigger fires.",
+        "fr": "Sans position pendant cette durée, un traceur est affiché injoignable et le déclencheur « Traceur perdu » se lance.",
+        "de": "Ohne Position für diese Dauer wird ein Tracker als nicht erreichbar angezeigt und der Auslöser „Tracker verloren“ startet.",
+        "es": "Sin posición durante este tiempo, el rastreador aparece inaccesible y se activa el disparador «Rastreador perdido»."
+      },
+      "required": false,
+      "default": 60,
+      "min": 5,
+      "max": 1440
+    }
+  ],
+  "actions": [
+    {
+      "key": "show_urls",
+      "label": {
+        "en": "Show the GPSLogger URLs",
+        "fr": "Afficher les URL GPSLogger",
+        "de": "GPSLogger-URLs anzeigen",
+        "es": "Mostrar las URL de GPSLogger"
+      },
+      "timeout_seconds": 15
+    },
+    {
+      "key": "send_test_position",
+      "label": {
+        "en": "Send a test position",
+        "fr": "Envoyer une position de test",
+        "de": "Testposition senden",
+        "es": "Enviar una posición de prueba"
+      },
+      "fields": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "required": true,
+          "default": "test-phone",
+          "label": {
+            "en": "Device name",
+            "fr": "Nom de l'appareil",
+            "de": "Gerätename",
+            "es": "Nombre del dispositivo"
+          },
+          "placeholder": {
+            "en": "e.g. alice-phone",
+            "fr": "ex. telephone-alice",
+            "de": "z. B. handy-alice",
+            "es": "p. ej. telefono-alicia"
+          }
+        },
+        {
+          "key": "latitude",
+          "type": "number",
+          "required": true,
+          "default": 48.8584,
+          "min": -90,
+          "max": 90,
+          "label": {
+            "en": "Latitude",
+            "fr": "Latitude",
+            "de": "Breitengrad",
+            "es": "Latitud"
+          }
+        },
+        {
+          "key": "longitude",
+          "type": "number",
+          "required": true,
+          "default": 2.2945,
+          "min": -180,
+          "max": 180,
+          "label": {
+            "en": "Longitude",
+            "fr": "Longitude",
+            "de": "Längengrad",
+            "es": "Longitud"
+          }
+        },
+        {
+          "key": "battery",
+          "type": "number",
+          "required": false,
+          "default": 80,
+          "min": 0,
+          "max": 100,
+          "label": {
+            "en": "Battery (%)",
+            "fr": "Batterie (%)",
+            "de": "Akku (%)",
+            "es": "Batería (%)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "forget_tracker",
+      "label": {
+        "en": "Forget a tracker",
+        "fr": "Oublier un traceur",
+        "de": "Tracker vergessen",
+        "es": "Olvidar un rastreador"
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Tracker",
+            "fr": "Traceur",
+            "de": "Tracker",
+            "es": "Rastreador"
+          },
+          "required": true
+        }
+      ]
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "position_updated",
+      "label": {
+        "en": "Position received",
+        "fr": "Position reçue",
+        "de": "Position empfangen",
+        "es": "Posición recibida"
+      },
+      "description": {
+        "en": "A phone sent a new GPS position.",
+        "fr": "Un téléphone a envoyé une nouvelle position GPS.",
+        "de": "Ein Handy hat eine neue GPS-Position gesendet.",
+        "es": "Un teléfono envió una nueva posición GPS."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Tracker",
+            "fr": "Traceur",
+            "de": "Tracker",
+            "es": "Rastreador"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Tracker name",
+            "fr": "Nom du traceur",
+            "de": "Name des Trackers",
+            "es": "Nombre del rastreador"
+          }
+        },
+        {
+          "key": "latitude",
+          "type": "number",
+          "label": {
+            "en": "Latitude",
+            "fr": "Latitude",
+            "de": "Breitengrad",
+            "es": "Latitud"
+          }
+        },
+        {
+          "key": "longitude",
+          "type": "number",
+          "label": {
+            "en": "Longitude",
+            "fr": "Longitude",
+            "de": "Längengrad",
+            "es": "Longitud"
+          }
+        },
+        {
+          "key": "accuracy",
+          "type": "number",
+          "label": {
+            "en": "Accuracy (m)",
+            "fr": "Précision (m)",
+            "de": "Genauigkeit (m)",
+            "es": "Precisión (m)"
+          }
+        },
+        {
+          "key": "speed",
+          "type": "number",
+          "label": {
+            "en": "Speed (km/h)",
+            "fr": "Vitesse (km/h)",
+            "de": "Geschwindigkeit (km/h)",
+            "es": "Velocidad (km/h)"
+          }
+        },
+        {
+          "key": "battery",
+          "type": "number",
+          "label": {
+            "en": "Battery (%)",
+            "fr": "Batterie (%)",
+            "de": "Akku (%)",
+            "es": "Batería (%)"
+          }
+        },
+        {
+          "key": "distance_from_home",
+          "type": "number",
+          "label": {
+            "en": "Distance from home (km)",
+            "fr": "Distance du domicile (km)",
+            "de": "Entfernung von zu Hause (km)",
+            "es": "Distancia a casa (km)"
+          }
+        },
+        {
+          "key": "maps_url",
+          "type": "string",
+          "label": {
+            "en": "Map link",
+            "fr": "Lien vers la carte",
+            "de": "Kartenlink",
+            "es": "Enlace al mapa"
+          }
+        }
+      ]
+    },
+    {
+      "key": "arrived_home",
+      "label": {
+        "en": "Arrived home",
+        "fr": "Arrivée à la maison",
+        "de": "Zu Hause angekommen",
+        "es": "Llegada a casa"
+      },
+      "description": {
+        "en": "A tracker entered the home radius.",
+        "fr": "Un traceur est entré dans le rayon du domicile.",
+        "de": "Ein Tracker hat den Radius um das Zuhause betreten.",
+        "es": "Un rastreador entró en el radio de la casa."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Tracker",
+            "fr": "Traceur",
+            "de": "Tracker",
+            "es": "Rastreador"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Tracker name",
+            "fr": "Nom du traceur",
+            "de": "Name des Trackers",
+            "es": "Nombre del rastreador"
+          }
+        },
+        {
+          "key": "latitude",
+          "type": "number",
+          "label": {
+            "en": "Latitude",
+            "fr": "Latitude",
+            "de": "Breitengrad",
+            "es": "Latitud"
+          }
+        },
+        {
+          "key": "longitude",
+          "type": "number",
+          "label": {
+            "en": "Longitude",
+            "fr": "Longitude",
+            "de": "Längengrad",
+            "es": "Longitud"
+          }
+        }
+      ]
+    },
+    {
+      "key": "left_home",
+      "label": {
+        "en": "Left home",
+        "fr": "Départ de la maison",
+        "de": "Zuhause verlassen",
+        "es": "Salida de casa"
+      },
+      "description": {
+        "en": "A tracker left the home radius.",
+        "fr": "Un traceur a quitté le rayon du domicile.",
+        "de": "Ein Tracker hat den Radius um das Zuhause verlassen.",
+        "es": "Un rastreador salió del radio de la casa."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Tracker",
+            "fr": "Traceur",
+            "de": "Tracker",
+            "es": "Rastreador"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Tracker name",
+            "fr": "Nom du traceur",
+            "de": "Name des Trackers",
+            "es": "Nombre del rastreador"
+          }
+        },
+        {
+          "key": "latitude",
+          "type": "number",
+          "label": {
+            "en": "Latitude",
+            "fr": "Latitude",
+            "de": "Breitengrad",
+            "es": "Latitud"
+          }
+        },
+        {
+          "key": "longitude",
+          "type": "number",
+          "label": {
+            "en": "Longitude",
+            "fr": "Longitude",
+            "de": "Längengrad",
+            "es": "Longitud"
+          }
+        },
+        {
+          "key": "distance_from_home",
+          "type": "number",
+          "label": {
+            "en": "Distance from home (km)",
+            "fr": "Distance du domicile (km)",
+            "de": "Entfernung von zu Hause (km)",
+            "es": "Distancia a casa (km)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "battery_low",
+      "label": {
+        "en": "Phone battery low",
+        "fr": "Batterie du téléphone faible",
+        "de": "Handy-Akku schwach",
+        "es": "Batería del teléfono baja"
+      },
+      "description": {
+        "en": "The battery dropped below the configured threshold.",
+        "fr": "La batterie est passée sous le seuil configuré.",
+        "de": "Der Akku ist unter die eingestellte Schwelle gefallen.",
+        "es": "La batería bajó del umbral configurado."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Tracker",
+            "fr": "Traceur",
+            "de": "Tracker",
+            "es": "Rastreador"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Tracker name",
+            "fr": "Nom du traceur",
+            "de": "Name des Trackers",
+            "es": "Nombre del rastreador"
+          }
+        },
+        {
+          "key": "battery",
+          "type": "number",
+          "label": {
+            "en": "Battery (%)",
+            "fr": "Batterie (%)",
+            "de": "Akku (%)",
+            "es": "Batería (%)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "tracker_lost",
+      "label": {
+        "en": "Tracker lost",
+        "fr": "Traceur perdu",
+        "de": "Tracker verloren",
+        "es": "Rastreador perdido"
+      },
+      "description": {
+        "en": "No position received for the configured delay.",
+        "fr": "Aucune position reçue depuis le délai configuré.",
+        "de": "Seit der eingestellten Dauer keine Position empfangen.",
+        "es": "Ninguna posición recibida durante el tiempo configurado."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Tracker",
+            "fr": "Traceur",
+            "de": "Tracker",
+            "es": "Rastreador"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Tracker name",
+            "fr": "Nom du traceur",
+            "de": "Name des Trackers",
+            "es": "Nombre del rastreador"
+          }
+        },
+        {
+          "key": "minutes_since_update",
+          "type": "number",
+          "label": {
+            "en": "Minutes since the last position",
+            "fr": "Minutes depuis la dernière position",
+            "de": "Minuten seit der letzten Position",
+            "es": "Minutos desde la última posición"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "get_position",
+      "label": {
+        "en": "Get a tracker position",
+        "fr": "Lire la position d'un traceur",
+        "de": "Position eines Trackers abrufen",
+        "es": "Obtener la posición de un rastreador"
+      },
+      "description": {
+        "en": "Last known position, battery and distance from home.",
+        "fr": "Dernière position connue, batterie et distance du domicile.",
+        "de": "Letzte bekannte Position, Akku und Entfernung von zu Hause.",
+        "es": "Última posición conocida, batería y distancia a casa."
+      },
+      "timeout_seconds": 10,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Tracker",
+            "fr": "Traceur",
+            "de": "Tracker",
+            "es": "Rastreador"
+          },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "found",
+          "type": "boolean",
+          "label": {
+            "en": "Position known",
+            "fr": "Position connue",
+            "de": "Position bekannt",
+            "es": "Posición conocida"
+          }
+        },
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Tracker name",
+            "fr": "Nom du traceur",
+            "de": "Name des Trackers",
+            "es": "Nombre del rastreador"
+          }
+        },
+        {
+          "key": "latitude",
+          "type": "number",
+          "label": {
+            "en": "Latitude",
+            "fr": "Latitude",
+            "de": "Breitengrad",
+            "es": "Latitud"
+          }
+        },
+        {
+          "key": "longitude",
+          "type": "number",
+          "label": {
+            "en": "Longitude",
+            "fr": "Longitude",
+            "de": "Längengrad",
+            "es": "Longitud"
+          }
+        },
+        {
+          "key": "accuracy",
+          "type": "number",
+          "label": {
+            "en": "Accuracy (m)",
+            "fr": "Précision (m)",
+            "de": "Genauigkeit (m)",
+            "es": "Precisión (m)"
+          }
+        },
+        {
+          "key": "altitude",
+          "type": "number",
+          "label": {
+            "en": "Altitude (m)",
+            "fr": "Altitude (m)",
+            "de": "Höhe (m)",
+            "es": "Altitud (m)"
+          }
+        },
+        {
+          "key": "speed",
+          "type": "number",
+          "label": {
+            "en": "Speed (km/h)",
+            "fr": "Vitesse (km/h)",
+            "de": "Geschwindigkeit (km/h)",
+            "es": "Velocidad (km/h)"
+          }
+        },
+        {
+          "key": "battery",
+          "type": "number",
+          "label": {
+            "en": "Battery (%)",
+            "fr": "Batterie (%)",
+            "de": "Akku (%)",
+            "es": "Batería (%)"
+          }
+        },
+        {
+          "key": "distance_from_home",
+          "type": "number",
+          "label": {
+            "en": "Distance from home (km)",
+            "fr": "Distance du domicile (km)",
+            "de": "Entfernung von zu Hause (km)",
+            "es": "Distancia a casa (km)"
+          }
+        },
+        {
+          "key": "at_home",
+          "type": "boolean",
+          "label": {
+            "en": "At home",
+            "fr": "À la maison",
+            "de": "Zu Hause",
+            "es": "En casa"
+          }
+        },
+        {
+          "key": "minutes_since_update",
+          "type": "number",
+          "label": {
+            "en": "Minutes since the last position",
+            "fr": "Minutes depuis la dernière position",
+            "de": "Minuten seit der letzten Position",
+            "es": "Minutos desde la última posición"
+          }
+        },
+        {
+          "key": "maps_url",
+          "type": "string",
+          "label": {
+            "en": "Map link",
+            "fr": "Lien vers la carte",
+            "de": "Kartenlink",
+            "es": "Enlace al mapa"
+          }
+        }
+      ]
+    },
+    {
+      "key": "distance_between_trackers",
+      "label": {
+        "en": "Distance between two trackers",
+        "fr": "Distance entre deux traceurs",
+        "de": "Entfernung zwischen zwei Trackern",
+        "es": "Distancia entre dos rastreadores"
+      },
+      "timeout_seconds": 10,
+      "fields": [
+        {
+          "key": "device_a",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "First tracker",
+            "fr": "Premier traceur",
+            "de": "Erster Tracker",
+            "es": "Primer rastreador"
+          },
+          "required": true
+        },
+        {
+          "key": "device_b",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Second tracker",
+            "fr": "Second traceur",
+            "de": "Zweiter Tracker",
+            "es": "Segundo rastreador"
+          },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "found",
+          "type": "boolean",
+          "label": {
+            "en": "Both positions known",
+            "fr": "Les deux positions sont connues",
+            "de": "Beide Positionen bekannt",
+            "es": "Ambas posiciones conocidas"
+          }
+        },
+        {
+          "key": "distance_km",
+          "type": "number",
+          "label": {
+            "en": "Distance (km)",
+            "fr": "Distance (km)",
+            "de": "Entfernung (km)",
+            "es": "Distancia (km)"
+          }
+        },
+        {
+          "key": "distance_m",
+          "type": "number",
+          "label": {
+            "en": "Distance (m)",
+            "fr": "Distance (m)",
+            "de": "Entfernung (m)",
+            "es": "Distancia (m)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "distance_to_point",
+      "label": {
+        "en": "Distance to a place",
+        "fr": "Distance jusqu'à un lieu",
+        "de": "Entfernung zu einem Ort",
+        "es": "Distancia a un lugar"
+      },
+      "description": {
+        "en": "Distance between a tracker and given coordinates.",
+        "fr": "Distance entre un traceur et des coordonnées données.",
+        "de": "Entfernung zwischen einem Tracker und Koordinaten.",
+        "es": "Distancia entre un rastreador y unas coordenadas."
+      },
+      "timeout_seconds": 10,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Tracker",
+            "fr": "Traceur",
+            "de": "Tracker",
+            "es": "Rastreador"
+          },
+          "required": true
+        },
+        {
+          "key": "latitude",
+          "type": "number",
+          "label": {
+            "en": "Latitude",
+            "fr": "Latitude",
+            "de": "Breitengrad",
+            "es": "Latitud"
+          },
+          "required": true,
+          "min": -90,
+          "max": 90
+        },
+        {
+          "key": "longitude",
+          "type": "number",
+          "label": {
+            "en": "Longitude",
+            "fr": "Longitude",
+            "de": "Längengrad",
+            "es": "Longitud"
+          },
+          "required": true,
+          "min": -180,
+          "max": 180
+        },
+        {
+          "key": "radius",
+          "type": "number",
+          "required": false,
+          "default": 200,
+          "min": 1,
+          "max": 100000,
+          "label": {
+            "en": "Radius (m)",
+            "fr": "Rayon (m)",
+            "de": "Radius (m)",
+            "es": "Radio (m)"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "found",
+          "type": "boolean",
+          "label": {
+            "en": "Position known",
+            "fr": "Position connue",
+            "de": "Position bekannt",
+            "es": "Posición conocida"
+          }
+        },
+        {
+          "key": "distance_km",
+          "type": "number",
+          "label": {
+            "en": "Distance (km)",
+            "fr": "Distance (km)",
+            "de": "Entfernung (km)",
+            "es": "Distancia (km)"
+          }
+        },
+        {
+          "key": "distance_m",
+          "type": "number",
+          "label": {
+            "en": "Distance (m)",
+            "fr": "Distance (m)",
+            "de": "Entfernung (m)",
+            "es": "Distancia (m)"
+          }
+        },
+        {
+          "key": "inside",
+          "type": "boolean",
+          "label": {
+            "en": "Within the radius",
+            "fr": "Dans le rayon",
+            "de": "Innerhalb des Radius",
+            "es": "Dentro del radio"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "trackers_overview",
+      "label": {
+        "en": "GPS trackers",
+        "fr": "Traceurs GPS",
+        "de": "GPS-Tracker",
+        "es": "Rastreadores GPS"
+      },
+      "description": {
+        "en": "Where every phone is: home or away, distance, battery, last update.",
+        "fr": "Où est chaque téléphone : maison ou absent, distance, batterie, dernière mise à jour.",
+        "de": "Wo jedes Handy ist: zu Hause oder weg, Entfernung, Akku, letzte Meldung.",
+        "es": "Dónde está cada teléfono: en casa o fuera, distancia, batería, última posición."
+      },
+      "icon": "map-pin"
+    },
+    {
+      "key": "tracker_status",
+      "label": {
+        "en": "GPS tracker",
+        "fr": "Traceur GPS",
+        "de": "GPS-Tracker",
+        "es": "Rastreador GPS"
+      },
+      "description": {
+        "en": "One phone in detail: live distance, battery and speed, map link.",
+        "fr": "Un téléphone en détail : distance, batterie et vitesse en direct, lien carte.",
+        "de": "Ein Handy im Detail: Entfernung, Akku und Tempo live, Kartenlink.",
+        "es": "Un teléfono en detalle: distancia, batería y velocidad en vivo, enlace al mapa."
+      },
+      "icon": "navigation",
+      "settings": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Tracker",
+            "fr": "Traceur",
+            "de": "Tracker",
+            "es": "Rastreador"
+          },
+          "required": true
+        }
+      ]
+    }
+  ]
+}
